@@ -5,11 +5,12 @@ using UnityEngine;
 [System.Serializable]
 public class StatModifier
 {
-    public StatModifier(Stat.Type type, float amount, Type modifierType)
+    public StatModifier(Stat.Type type, float amount, Type modifierType, float duration = -1)
     {
         this.type = type;
         this.amount = amount;
         this.modifierType = modifierType;
+        this.duration = duration;
     }
     [System.Serializable]
     public enum Type
@@ -17,6 +18,8 @@ public class StatModifier
         add, multiply
     }
     public Stat.Type type;
-    public float amount;
     public Type modifierType;
+    public float amount;
+    public float duration;
+
 }

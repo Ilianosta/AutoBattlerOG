@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +7,19 @@ using UnityEngine;
 [System.Serializable]
 public class Stat
 {
+    public Stat(Type type, float value = 10)
+    {
+        this.type = type;
+        this.value = value;
+    }
+
     [System.Serializable]
     public enum Type
     {
         life,
         armor,
-        attack
+        attack,
+        speed
     }
 
     // Typing
@@ -39,13 +47,19 @@ public class Stat
 
     public void AddModifier(StatModifier statModifier)
     {
+        if (modifiers == null) modifiers = new List<StatModifier>();
         if (statModifier.amount != 0) modifiers.Add(statModifier);
-        var sortedList = modifiers.OrderBy(x => x.modifierType == StatModifier.Type.multiply).ToList();
-        modifiers = sortedList;
+        SortList();
     }
     public void RemoveModifier(StatModifier statModifier)
     {
+        if (modifiers == null) modifiers = new List<StatModifier>();
         if (statModifier.amount != 0) modifiers.Remove(statModifier);
+        SortList();
+    }
+
+    private void SortList()
+    {
         var sortedList = modifiers.OrderBy(x => x.modifierType == StatModifier.Type.multiply).ToList();
         modifiers = sortedList;
     }

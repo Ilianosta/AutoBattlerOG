@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "AutoBattler_OG.sln"
+    "dotnet.defaultSolution": "AutoBattler_OG.sln",
+    "git.ignoreLimitWarning": true
 }
