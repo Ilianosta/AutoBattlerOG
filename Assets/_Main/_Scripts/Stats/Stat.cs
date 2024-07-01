@@ -10,7 +10,8 @@ public class Stat
     public Stat(Type type, float value = 10)
     {
         this.type = type;
-        this.value = value;
+        this.statValue = value;
+        this.modifiers = new List<StatModifier>();
     }
 
     [System.Serializable]
@@ -27,12 +28,14 @@ public class Stat
     public Type GetStat => type;
 
     // Values
-    [SerializeField] private float value;
+    [SerializeField] private float statValue;
     public float GetValue
     {
         get
         {
-            float totalValue = value;
+            if (modifiers == null) modifiers = new List<StatModifier>();
+
+            float totalValue = statValue;
             foreach (StatModifier modifier in modifiers)
             {
                 if (modifier.modifierType == StatModifier.Type.add) totalValue += modifier.amount;

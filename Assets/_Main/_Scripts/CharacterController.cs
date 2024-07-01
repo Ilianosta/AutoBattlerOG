@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class CharacterController : CharacterStats
 {
+    [SerializeField] private Sprite sprite;
+    private void CreateCharacter()
+    {
+        UIManager.instance.CreateCharSpriteInVelocity(sprite, GetStat(Stat.Type.speed).GetValue);
+    }
     public void Cast()
     {
 
