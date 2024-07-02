@@ -19,9 +19,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public Transform[] charPositions;
     private void Awake()
     {
         if (GameManager.instance) Destroy(this);
         else GameManager.instance = this;
+    }
+
+    private void Start()
+    {
+        foreach (CharacterSelection selection in CharacterSelections.instance.selections)
+        {
+            GameObject newCharacter = Instantiate(selection.character.model, charPositions[selection.position]);
+        }
     }
 }

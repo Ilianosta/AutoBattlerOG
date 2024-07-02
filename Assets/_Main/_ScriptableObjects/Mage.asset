@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e840254c9d7ac74e8d840cf6ab0b76c, type: 3}
+  m_Name: Mage
+  m_EditorClassIdentifier: 
+  model: {fileID: 4104687335377216058, guid: 976c9158a731c844782cab02157d384c, type: 3}
+  sprite: {fileID: 0}
+  stats:
+  - type: 0
+    statValue: 8
+  - type: 1
+    statValue: 8
+  - type: 2
+    statValue: 15
+  - type: 3
+    statValue: 12

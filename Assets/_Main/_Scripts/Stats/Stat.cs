@@ -13,6 +13,12 @@ public class Stat
         this.statValue = value;
         this.modifiers = new List<StatModifier>();
     }
+    public Stat(Stat stat)
+    {
+        this.type = stat.type;
+        this.statValue = stat.statValue;
+        this.modifiers = new List<StatModifier>();
+    }
 
     [System.Serializable]
     public enum Type
