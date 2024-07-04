@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public static bool GamePaused = true;
+    public static bool GamePaused = false;
     public float speedMultiplierRule;
     public bool activeTurn = false;
     public Transform[] charPositions;

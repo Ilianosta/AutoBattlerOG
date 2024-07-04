@@ -6,6 +6,6 @@ public class Knight_S_Defend : Skill
 {
     public override void Cast()
     {
-        throw new System.NotImplementedException();
+        animator.SetTrigger("KnightScream");
     }
 }

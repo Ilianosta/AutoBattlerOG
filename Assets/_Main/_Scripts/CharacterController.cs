@@ -7,7 +7,17 @@ public class CharacterController : MonoBehaviour
     public int id;
     [SerializeField] private CharacterSO character;
     [SerializeField] private CharacterStats stats;
-
+    private int actualSkill = 0;
+    private int ActualSkill
+    {
+        get { return actualSkill; }
+        set
+        {
+            actualSkill = value;
+            if (actualSkill > skills.Count - 2) actualSkill = 0;
+            if (actualSkill < 0) actualSkill = 0;
+        }
+    }
     private List<Skill> skills = new List<Skill>();
 
     private void Awake()
@@ -23,7 +33,11 @@ public class CharacterController : MonoBehaviour
 
     private void Update()
     {
-        if (!GameManager.instance.activeTurn && !GameManager.GamePaused) UIManager.instance.UpdateCharVelocityIcon(id);
+        if (!GameManager.instance.activeTurn && !GameManager.GamePaused)
+        {
+            bool isMyTurn = UIManager.instance.UpdateCharVelocityIcon(id);
+            if (isMyTurn) Cast();
+        }
     }
     // #region "Utilities"
     // private void GenerateModifier(Stat.Type statType, StatModifier.Type modType, float amount, float duration = -1)
@@ -55,8 +69,11 @@ public class CharacterController : MonoBehaviour
 
     public void Cast()
     {
-
+        skills[actualSkill].Cast();
+        ActualSkill++;
     }
+
+    public void EndTurn() => GameManager.instance.activeTurn = false;
 
     public void TakeDamage(float amount)
     {

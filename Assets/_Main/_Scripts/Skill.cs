@@ -1,10 +1,12 @@
 using UnityEngine;
 public abstract class Skill : MonoBehaviour
 {
-    [SerializeField] private float amount;
-    [SerializeField] private SkillObjective objective;
-    [SerializeField] private bool affectAllies;
-    [SerializeField] private bool affectEnemies;
+    [SerializeField] protected float amount;
+    [SerializeField] protected SkillObjective objective;
+    [SerializeField] protected bool affectAllies;
+    [SerializeField] protected bool affectEnemies;
+    [SerializeField] protected Animator animator;
+
     public abstract void Cast();
 
     public enum SkillObjective

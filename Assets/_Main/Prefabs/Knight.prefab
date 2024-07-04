@@ -64,6 +64,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6757486164790158407}
   m_SourcePrefab: {fileID: 100100000, guid: 981ec557ab2cba84796f24444338b644, type: 3}
+--- !u!95 &683592484981890950 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 740807867894525895, guid: 981ec557ab2cba84796f24444338b644, type: 3}
+  m_PrefabInstance: {fileID: 232915505010323521}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &6409977123971676072 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6615694743729080297, guid: 981ec557ab2cba84796f24444338b644, type: 3}
@@ -85,3 +90,4 @@ MonoBehaviour:
   objective: 1
   affectAllies: 0
   affectEnemies: 0
+  animator: {fileID: 683592484981890950}
