@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mage
   m_EditorClassIdentifier: 
   model: {fileID: 4104687335377216058, guid: 976c9158a731c844782cab02157d384c, type: 3}
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 15426f96789b5494a985167197ad5015, type: 3}
   stats:
   - type: 0
     statValue: 8

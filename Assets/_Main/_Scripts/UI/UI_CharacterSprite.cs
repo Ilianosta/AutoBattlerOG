@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UI_CharacterSprite : MonoBehaviour
 {
+    public int id;
     [SerializeField] private Image charSprite;
     [SerializeField] private Image hpBar;
     [SerializeField] private Image manaBar;

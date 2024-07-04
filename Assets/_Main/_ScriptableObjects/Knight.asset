@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Knight
   m_EditorClassIdentifier: 
   model: {fileID: 6409977123971676072, guid: 15b7972428b9ae14493d5529d343eb66, type: 3}
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 15426f96789b5494a985167197ad5015, type: 3}
   stats:
   - type: 0
     statValue: 10

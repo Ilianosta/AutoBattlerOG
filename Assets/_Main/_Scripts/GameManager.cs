@@ -5,21 +5,13 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public static bool GamePaused;
+    public static bool GamePaused = true;
     public float speedMultiplierRule;
-    private bool activeTurn = false;
-    public bool ActiveTurn
-    {
-        get { return activeTurn; }
-        set
-        {
-            activeTurn = value;
-            if (activeTurn) UIManager.instance.PauseVelocityCounter();
-            else UIManager.instance.StartVelocityCounter();
-        }
-    }
-
+    public bool activeTurn = false;
     public Transform[] charPositions;
+    public delegate void OnCharacterCreated();
+    public event OnCharacterCreated onCharacterCreated;
+
     private void Awake()
     {
         if (GameManager.instance) Destroy(this);
@@ -31,6 +23,12 @@ public class GameManager : MonoBehaviour
         foreach (CharacterSelection selection in CharacterSelections.instance.selections)
         {
             GameObject newCharacter = Instantiate(selection.character.model, charPositions[selection.position]);
+            newCharacter.GetComponent<CharacterController>().id = selection.position;
         }
+    }
+
+    public void _OnCharacterCreated()
+    {
+
     }
 }

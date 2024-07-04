@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform velocityPointA;
     [SerializeField] private RectTransform velocityPointB;
 
+    private float velocityDistance = 100;
     private List<VelocityChar> velocityChars = new List<VelocityChar>();
 
     private void Awake()
@@ -21,46 +23,55 @@ public class UIManager : MonoBehaviour
         else UIManager.instance = this;
     }
 
-    public void CreateCharSpriteInVelocity(Sprite sprite, float speed)
+    public void CreateCharSpriteInVelocity(int id, Sprite sprite, float speed)
     {
         GameObject prefab = Instantiate(charSpritePrefab, velocityLine);
         prefab.GetComponent<Image>().sprite = sprite;
 
         RectTransform rectPrefab = prefab.GetComponent<RectTransform>();
-        rectPrefab.position = velocityPointA.position;
+        rectPrefab.localPosition = velocityPointA.localPosition;
 
-        velocityChars.Add(new VelocityChar(rectPrefab, speed * GameManager.instance.speedMultiplierRule));
+        velocityChars.Add(new VelocityChar(id, rectPrefab, speed * GameManager.instance.speedMultiplierRule));
     }
 
-    public void StartVelocityCounter()
+    public void UpdateCharStatusInUI(int id, Sprite sprite, float hpPercentage = 100, float manaPercentage = 0)
     {
-        Debug.Log("Velocity started");
-        foreach (VelocityChar velocityChar in velocityChars)
-        {
-            Debug.Log("Char starting at: " + velocityChar.speed);
-            velocityChar.rect.DOLocalMove(velocityPointB.localPosition, velocityChar.speed).SetEase(Ease.Linear).OnComplete(() =>
-            {
-                PauseVelocityCounter();
-            });
-        }
+        var charSprite = charSprites[id];
+
+        if (!charSprite.gameObject.activeSelf) charSprite.gameObject.SetActive(true);
+
+        charSprite.id = id;
+        charSprite.SetCharacterSprite(sprite);
+        charSprite.SetHpPercentage(hpPercentage);
+        charSprite.SetManaPercentage(manaPercentage);
     }
 
-    public void PauseVelocityCounter()
+    public void UpdateCharVelocityIcon(int id)
     {
-        foreach (VelocityChar velocityChar in velocityChars)
+        VelocityChar icon = velocityChars.FirstOrDefault(icon => icon.id == id);
+        icon.actualPosition += icon.speed;
+        if (icon.actualPosition > velocityDistance)
         {
-            velocityChar.rect.DOKill();
+            icon.actualPosition = velocityDistance;
+            GameManager.instance.activeTurn = true;
         }
+        float newPosition = icon.actualPosition / velocityDistance;
+        icon.rect.localPosition = Vector3.LerpUnclamped(velocityPointA.localPosition, velocityPointB.localPosition, newPosition);
     }
 
+    [System.Serializable]
     private class VelocityChar
     {
+        public int id;
         public RectTransform rect;
         public float speed;
-        public VelocityChar(RectTransform rect, float speed)
+        public float actualPosition = 0;
+        public VelocityChar(int id, RectTransform rect, float speed)
         {
+            this.id = id;
             this.rect = rect;
             this.speed = speed;
+            this.actualPosition = 0;
         }
     }
 }

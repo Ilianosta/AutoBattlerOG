@@ -4,46 +4,53 @@ using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
+    public int id;
     [SerializeField] private CharacterSO character;
     [SerializeField] private CharacterStats stats;
+
+    private List<Skill> skills = new List<Skill>();
+
+    private void Awake()
+    {
+        skills.AddRange(GetComponents<Skill>());
+    }
 
     private void Start()
     {
         stats = new CharacterStats(character.stats);
+        CreateCharacter();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A)) GenerateModifier(Stat.Type.life, StatModifier.Type.add, 10);
-        if (Input.GetKeyDown(KeyCode.B)) GenerateModifier(Stat.Type.life, StatModifier.Type.multiply, 10);
-        if (Input.GetKeyDown(KeyCode.C)) GenerateModifier(Stat.Type.life, StatModifier.Type.multiply, 10, 5);
-        if (Input.GetKeyDown(KeyCode.D)) GenerateModifier(Stat.Type.life, StatModifier.Type.add, 4, 10);
+        if (!GameManager.instance.activeTurn && !GameManager.GamePaused) UIManager.instance.UpdateCharVelocityIcon(id);
     }
-    #region "Utilities"
-    private void GenerateModifier(Stat.Type statType, StatModifier.Type modType, float amount, float duration = -1)
-    {
-        StatModifier statModifier = new StatModifier(statType, amount, modType, duration);
+    // #region "Utilities"
+    // private void GenerateModifier(Stat.Type statType, StatModifier.Type modType, float amount, float duration = -1)
+    // {
+    //     StatModifier statModifier = new StatModifier(statType, amount, modType, duration);
 
-        Stat stat = stats.GetStat(statModifier.type);
-        stat.AddModifier(statModifier);
-        if (statModifier.duration > 0)
-        {
-            StartCoroutine(RemoveModifierIn(statModifier, statModifier.duration));
-        }
-    }
-    private void GenerateModifier(StatModifier statModifier)
-    {
-        Stat stat = stats.GetStat(statModifier.type);
-        stat.AddModifier(statModifier);
-        if (statModifier.duration > 0)
-        {
-            StartCoroutine("RemoveModifierIn", (statModifier, statModifier.duration));
-        }
-    }
-    #endregion
+    //     Stat stat = stats.GetStat(statModifier.type);
+    //     stat.AddModifier(statModifier);
+    //     if (statModifier.duration > 0)
+    //     {
+    //         StartCoroutine(RemoveModifierIn(statModifier, statModifier.duration));
+    //     }
+    // }
+    // private void GenerateModifier(StatModifier statModifier)
+    // {
+    //     Stat stat = stats.GetStat(statModifier.type);
+    //     stat.AddModifier(statModifier);
+    //     if (statModifier.duration > 0)
+    //     {
+    //         StartCoroutine("RemoveModifierIn", (statModifier, statModifier.duration));
+    //     }
+    // }
+    // #endregion
     private void CreateCharacter()
     {
-        UIManager.instance.CreateCharSpriteInVelocity(character.sprite, stats.GetStat(Stat.Type.speed).GetValue);
+        UIManager.instance.CreateCharSpriteInVelocity(id, character.sprite, stats.GetStat(Stat.Type.speed).GetValue);
+        UIManager.instance.UpdateCharStatusInUI(id, character.sprite);
     }
 
     public void Cast()
