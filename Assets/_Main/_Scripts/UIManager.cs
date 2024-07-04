@@ -36,6 +36,8 @@ public class UIManager : MonoBehaviour
 
     public void UpdateCharStatusInUI(int id, Sprite sprite, float hpPercentage = 100, float manaPercentage = 0)
     {
+        if (id > 4) return;
+        
         var charSprite = charSprites[id];
 
         if (!charSprite.gameObject.activeSelf) charSprite.gameObject.SetActive(true);
