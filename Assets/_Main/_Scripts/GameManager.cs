@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public float speedMultiplierRule;
     public bool activeTurn = false;
     public Transform[] charPositions;
+    public List<CharacterController> charactersInGame = new List<CharacterController>();
     public delegate void OnCharacterCreated();
     public event OnCharacterCreated onCharacterCreated;
 
@@ -23,7 +24,9 @@ public class GameManager : MonoBehaviour
         foreach (CharacterSelection selection in CharacterSelections.instance.selections)
         {
             GameObject newCharacter = Instantiate(selection.character.model, charPositions[selection.position]);
-            newCharacter.GetComponent<CharacterController>().id = selection.position;
+            var newCharController = newCharacter.GetComponent<CharacterController>();
+            newCharController.id = selection.position;
+            charactersInGame.Add(newCharController);
         }
     }
 

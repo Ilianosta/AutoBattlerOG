@@ -374,6 +374,7 @@ MonoBehaviour:
   - {fileID: 306986262}
   - {fileID: 1100774731}
   - {fileID: 617289313}
+  charactersInGame: []
 --- !u!4 &60146993
 Transform:
   m_ObjectHideFlags: 0

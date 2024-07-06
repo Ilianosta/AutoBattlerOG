@@ -5,8 +5,11 @@ using UnityEngine;
 public class CharacterController : MonoBehaviour
 {
     public int id;
+    public bool IsDead => stats.isDead;
     [SerializeField] private CharacterSO character;
     [SerializeField] private CharacterStats stats;
+    public CharacterStats Stats => stats;
+    public float ActualLife => stats.ActualLife;
     private int actualSkill = 0;
     private int ActualSkill
     {
@@ -36,7 +39,7 @@ public class CharacterController : MonoBehaviour
         if (!GameManager.instance.activeTurn && !GameManager.GamePaused)
         {
             bool isMyTurn = UIManager.instance.UpdateCharVelocityIcon(id);
-            if (isMyTurn) Cast();
+            if (isMyTurn) OnMyTurn();
         }
     }
     // #region "Utilities"
@@ -67,6 +70,11 @@ public class CharacterController : MonoBehaviour
         UIManager.instance.UpdateCharStatusInUI(id, character.sprite);
     }
 
+    public void OnMyTurn()
+    {
+        Cast();
+    }
+
     public void Cast()
     {
         skills[actualSkill].Cast();
@@ -77,6 +85,7 @@ public class CharacterController : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
+        GetComponentInChildren<Animator>().SetTrigger("TakingPunch");
         amount -= stats.GetStat(Stat.Type.armor).GetValue;
         if (amount > 0) stats.ActualLife -= amount;
     }

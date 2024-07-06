@@ -1,15 +1,21 @@
 using UnityEngine;
 public abstract class Skill : MonoBehaviour
 {
-    [SerializeField] protected float amount;
-    [SerializeField] protected SkillObjective objective;
-    [SerializeField] protected bool affectAllies;
-    [SerializeField] protected bool affectEnemies;
     [SerializeField] protected Animator animator;
+    [SerializeField] protected float amount;
+    [SerializeField] protected bool isDamage;
+    [SerializeField] protected bool isHeal;
+    [SerializeField] protected StatModifier[] modifiers;
+    [SerializeField] protected CharacterTargetSystem targetSystem;
+    
+    public virtual void Awake()
+    {
+        targetSystem = new CharacterTargetSystem(this);
+    }
 
     public abstract void Cast();
 
-    public enum SkillObjective
+    public enum SkillTarget
     {
         none,
         myself,

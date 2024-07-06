@@ -7,6 +7,7 @@ using UnityEngine;
 [Serializable]
 public class CharacterStats
 {
+    public bool isDead = false;
     [SerializeField] private List<Stat> stats = new List<Stat>();
     private float actualLife;
     public float ActualLife
@@ -21,8 +22,16 @@ public class CharacterStats
 
             float maxLife = GetStat(Stat.Type.life).GetValue;
 
-            if (actualLife <= 0) actualLife = 0;
-            if (actualLife > maxLife) actualLife = maxLife;
+            if (actualLife <= 0)
+            {
+                actualLife = 0;
+                isDead = true;
+            }
+            if (actualLife > maxLife)
+            {
+                actualLife = maxLife;
+                isDead = false;
+            }
         }
     }
 
