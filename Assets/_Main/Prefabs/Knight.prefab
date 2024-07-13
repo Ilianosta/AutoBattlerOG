@@ -63,9 +63,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6615694743729080297, guid: 981ec557ab2cba84796f24444338b644, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8052502162426421735}
-    - targetCorrespondingSourceObject: {fileID: 6615694743729080297, guid: 981ec557ab2cba84796f24444338b644, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6757486164790158407}
   m_SourcePrefab: {fileID: 100100000, guid: 981ec557ab2cba84796f24444338b644, type: 3}
 --- !u!95 &683592484981890950 stripped
 Animator:
@@ -99,25 +96,4 @@ MonoBehaviour:
     targetType: 0
     affectAllies: 0
     affectEnemies: 0
---- !u!114 &6757486164790158407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6409977123971676072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 997b7139b046532409d4220f7497f768, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  animator: {fileID: 683592484981890950}
-  amount: 10
-  isDamage: 0
-  isHeal: 0
-  modifiers: []
-  targetSystem:
-    amountOfTargets: 0
-    targetType: 0
-    affectAllies: 0
-    affectEnemies: 0
+  imEnemy: 0

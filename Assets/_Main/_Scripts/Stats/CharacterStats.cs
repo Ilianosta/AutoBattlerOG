@@ -22,17 +22,20 @@ public class CharacterStats
 
             float maxLife = GetStat(Stat.Type.life).GetValue;
 
-            if (actualLife <= 0)
-            {
-                actualLife = 0;
-                isDead = true;
-            }
-            if (actualLife > maxLife)
-            {
-                actualLife = maxLife;
-                isDead = false;
-            }
+            if (actualLife < 0 || actualLife == 0) actualLife = 0;
+            if (actualLife > maxLife) actualLife = maxLife;
         }
+    }
+
+    public float GetHpPercentage => ActualLife / GetStat(Stat.Type.life).GetValue;
+
+    public void SetHpPercentage(float percentage)
+    {
+        ActualLife = (ActualLife * percentage) / 100;
+    }
+    public void SetManaPercentage(float percentage)
+    {
+        // TODO
     }
 
     public CharacterStats(List<Stat> stats)

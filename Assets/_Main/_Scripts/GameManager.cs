@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
         get
         {
             int startIndex = 0;
-            int endIndex = 5;
+            int endIndex = 4;
             return GameManager.instance.charactersInGame
                        .Skip(startIndex)
                        .Take(endIndex - startIndex)

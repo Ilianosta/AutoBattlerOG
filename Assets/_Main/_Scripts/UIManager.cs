@@ -35,7 +35,7 @@ public class UIManager : MonoBehaviour
         velocityChars.Add(new VelocityChar(id, rectPrefab, speed * GameManager.instance.speedMultiplierRule));
     }
 
-    public void UpdateCharStatusInUI(int id, Sprite sprite, float hpPercentage = 100, float manaPercentage = 0)
+    public void UpdateCharStatusInUI(int id, float hpPercentage = 100, float manaPercentage = 0, Sprite sprite = null)
     {
         if (id > 4) return;
 
@@ -44,9 +44,9 @@ public class UIManager : MonoBehaviour
         if (!charSprite.gameObject.activeSelf) charSprite.gameObject.SetActive(true);
 
         charSprite.id = id;
-        charSprite.SetCharacterSprite(sprite);
         charSprite.SetHpPercentage(hpPercentage);
         charSprite.SetManaPercentage(manaPercentage);
+        if (sprite) charSprite.SetCharacterSprite(sprite);
     }
 
     public bool UpdateCharVelocityIcon(int id)
@@ -65,6 +65,13 @@ public class UIManager : MonoBehaviour
         // Debug.Log("newposition: " + newPosition);
         icon.rect.localPosition = Vector3.LerpUnclamped(velocityPointA.localPosition, velocityPointB.localPosition, newPosition);
         return isMyTurn;
+    }
+
+    public void EnableCharVelocityIcon(bool enable, int id)
+    {
+        VelocityChar icon = velocityChars.FirstOrDefault(icon => icon.id == id);
+        icon.actualPosition = 0;
+        icon.rect.gameObject.SetActive(enable);
     }
 
     [System.Serializable]

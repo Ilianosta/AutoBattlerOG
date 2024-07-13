@@ -8,6 +8,8 @@ public class CharacterController : MonoBehaviour
     public bool IsDead => stats.isDead;
     [SerializeField] private CharacterSO character;
     [SerializeField] private CharacterStats stats;
+    [SerializeField] private float startingLifePercentage = 100;
+    [SerializeField] private float startingManaPercentage = 100;
     public CharacterStats Stats => stats;
     public float ActualLife => stats.ActualLife;
     private int actualSkill = 0;
@@ -17,7 +19,7 @@ public class CharacterController : MonoBehaviour
         set
         {
             actualSkill = value;
-            if (actualSkill > skills.Count - 2) actualSkill = 0;
+            if (actualSkill > skills.Count - 1) actualSkill = 0;
             if (actualSkill < 0) actualSkill = 0;
         }
     }
@@ -27,6 +29,8 @@ public class CharacterController : MonoBehaviour
 
     public delegate void OnCharacterTurn(bool start, int id);
     public static event OnCharacterTurn onCharacterTurn;
+
+    private Animator animator;
     private void OnEnable()
     {
         Suscribe(true);
@@ -38,11 +42,16 @@ public class CharacterController : MonoBehaviour
     private void Awake()
     {
         skills.AddRange(GetComponents<Skill>());
+        animator = GetComponentInChildren<Animator>();
+
+        stats = new CharacterStats(character.stats);
+
+        stats.SetHpPercentage(startingLifePercentage);
+        stats.SetManaPercentage(startingManaPercentage);
     }
 
     private void Start()
     {
-        stats = new CharacterStats(character.stats);
         CreateCharacter();
         foreach (Skill skill in skills) skill.imEnemy = id <= 4 ? false : true;
     }
@@ -93,7 +102,7 @@ public class CharacterController : MonoBehaviour
     private void CreateCharacter()
     {
         UIManager.instance.CreateCharSpriteInVelocity(id, character.sprite, stats.GetStat(Stat.Type.speed).GetValue);
-        UIManager.instance.UpdateCharStatusInUI(id, character.sprite);
+        UIManager.instance.UpdateCharStatusInUI(id, startingLifePercentage, startingManaPercentage, character.sprite);
     }
     private void OnTurn(bool start, int id)
     {
@@ -116,15 +125,30 @@ public class CharacterController : MonoBehaviour
 
     public void Cast()
     {
+        // Debug.Log(id + " is taking the turn!");
         skills[actualSkill].Cast();
         ActualSkill++;
     }
 
     public void TakeDamage(float amount)
     {
-        GetComponentInChildren<Animator>().SetTrigger("TakingPunch");
+        // Debug.Log(id + " is taking damage!");
         amount -= stats.GetStat(Stat.Type.armor).GetValue;
-        if (amount > 0) stats.ActualLife -= amount;
+        if (amount > 0)
+        {
+            stats.ActualLife -= amount;
+            UIManager.instance.UpdateCharStatusInUI(id, stats.GetHpPercentage, 100);
+            if (stats.ActualLife == 0)
+            {
+                stats.isDead = true;
+                animator.SetTrigger("Death");
+                Suscribe(false);
+                wait = true;
+                UIManager.instance.EnableCharVelocityIcon(false, id);
+                return;
+            }
+            animator.SetTrigger("TakingPunch");
+        }
     }
 
     IEnumerator RemoveModifierIn(StatModifier statModifier, float duration)
