@@ -7,7 +7,7 @@ public abstract class Skill : MonoBehaviour
     [SerializeField] protected bool isHeal;
     [SerializeField] protected StatModifier[] modifiers;
     [SerializeField] protected CharacterTargetSystem targetSystem;
-    
+    public bool imEnemy;
     public virtual void Awake()
     {
         targetSystem = new CharacterTargetSystem(this);

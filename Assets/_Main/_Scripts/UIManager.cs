@@ -54,16 +54,15 @@ public class UIManager : MonoBehaviour
         bool isMyTurn = false;
         VelocityChar icon = velocityChars.FirstOrDefault(icon => icon.id == id);
         icon.actualPosition += icon.speed * Time.deltaTime;
-        Debug.Log("icon speed: " + icon.speed);
+        // Debug.Log("icon speed: " + icon.speed);
         if (icon.actualPosition > velocityDistance)
         {
-            Debug.Log("TURN ACTIVATED - actual pos | velocity: " + icon.actualPosition + " | " + velocityDistance);
+            // Debug.Log("TURN ACTIVATED - actual pos | velocity: " + icon.actualPosition + " | " + velocityDistance);
             icon.actualPosition = 0;
-            GameManager.instance.activeTurn = true;
             isMyTurn = true;
         }
         float newPosition = icon.actualPosition / velocityDistance;
-        Debug.Log("newposition: " + newPosition);
+        // Debug.Log("newposition: " + newPosition);
         icon.rect.localPosition = Vector3.LerpUnclamped(velocityPointA.localPosition, velocityPointB.localPosition, newPosition);
         return isMyTurn;
     }

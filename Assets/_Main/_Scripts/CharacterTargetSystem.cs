@@ -6,16 +6,34 @@ using UnityEngine;
 [System.Serializable]
 public class CharacterTargetSystem
 {
-    public CharacterTargetSystem(Skill mySelf)
+    public CharacterTargetSystem(Skill mySkill)
     {
-        this.mySelf = mySelf;
+        this.mySkill = mySkill;
     }
 
     [SerializeField] private int amountOfTargets;
     [SerializeField] private Skill.SkillTarget targetType;
     [SerializeField] private bool affectAllies;
     [SerializeField] private bool affectEnemies;
-    private Skill mySelf;
+    private Skill mySkill;
+
+    private bool GetMyEnemies
+    {
+        get
+        {
+            if (mySkill.imEnemy) return true;
+            else return false;
+        }
+    }
+    private bool GetMyAllies
+    {
+        get
+        {
+            if (mySkill.imEnemy) return false;
+            else return true;
+        }
+    }
+
     public List<CharacterController> GetTargets()
     {
         List<CharacterController> charTargets = targetType switch
@@ -60,12 +78,12 @@ public class CharacterTargetSystem
 
         if (affectAllies)
         {
-            charAllies.AddRange(GetEnemiesOrAllies(true));
+            charAllies.AddRange(GetTeamTargets(GetMyAllies));
             RemoveMeelesFromList(charAllies);
         }
         if (affectEnemies)
         {
-            charEnemies.AddRange(GetEnemiesOrAllies(false));
+            charEnemies.AddRange(GetTeamTargets(GetMyEnemies));
             RemoveMeelesFromList(charEnemies);
         }
         List<CharacterController> characters = new List<CharacterController>();
@@ -99,13 +117,13 @@ public class CharacterTargetSystem
     }
     private List<CharacterController> GetTargetMySelf()
     {
-        return new List<CharacterController> { mySelf.GetComponent<CharacterController>() };
+        return new List<CharacterController> { mySkill.GetComponent<CharacterController>() };
     }
 
 
     private List<CharacterController> GetTargetDefault()
     {
-        List<CharacterController> characters = GetEnemiesOrAllies(false);
+        List<CharacterController> characters = GetTeamTargets(GetMyEnemies);
         return characters
             .Where(c => !c.IsDead)
             .Take(1)
@@ -116,8 +134,8 @@ public class CharacterTargetSystem
     {
         List<CharacterController> characters = new List<CharacterController>();
 
-        if (affectAllies) characters.AddRange(GetEnemiesOrAllies(true));
-        if (affectEnemies) characters.AddRange(GetEnemiesOrAllies(false));
+        if (affectAllies) characters.AddRange(GetTeamTargets(GetMyAllies));
+        if (affectEnemies) characters.AddRange(GetTeamTargets(GetMyEnemies));
 
         return targetType switch
         {
@@ -127,15 +145,9 @@ public class CharacterTargetSystem
         };
     }
 
-    private List<CharacterController> GetEnemiesOrAllies(bool isAlly)
+    private List<CharacterController> GetTeamTargets(bool isAlly)
     {
-        int startIndex = isAlly ? 0 : 5;
-        int endIndex = isAlly ? 4 : GameManager.instance.charactersInGame.Count;
-
-        return GameManager.instance.charactersInGame
-            .Skip(startIndex)
-            .Take(endIndex - startIndex)
-            .Where(c => !c.IsDead)
-            .ToList();
+        if (isAlly) return GameManager.instance.Allies;
+        else return GameManager.instance.Enemies;
     }
 }

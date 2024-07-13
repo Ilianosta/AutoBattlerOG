@@ -22,7 +22,19 @@ public class CharacterController : MonoBehaviour
         }
     }
     private List<Skill> skills = new List<Skill>();
+    private bool wait = false;
 
+
+    public delegate void OnCharacterTurn(bool start, int id);
+    public static event OnCharacterTurn onCharacterTurn;
+    private void OnEnable()
+    {
+        Suscribe(true);
+    }
+    private void OnDisable()
+    {
+        Suscribe(false);
+    }
     private void Awake()
     {
         skills.AddRange(GetComponents<Skill>());
@@ -32,16 +44,30 @@ public class CharacterController : MonoBehaviour
     {
         stats = new CharacterStats(character.stats);
         CreateCharacter();
+        foreach (Skill skill in skills) skill.imEnemy = id <= 4 ? false : true;
     }
 
     private void Update()
     {
-        if (!GameManager.instance.activeTurn && !GameManager.GamePaused)
+        if (!wait && !GameManager.GamePaused)
         {
             bool isMyTurn = UIManager.instance.UpdateCharVelocityIcon(id);
-            if (isMyTurn) OnMyTurn();
+            if (isMyTurn) onCharacterTurn?.Invoke(true, id);
         }
     }
+
+    private void Suscribe(bool enable)
+    {
+        if (enable)
+        {
+            onCharacterTurn += OnTurn;
+        }
+        else
+        {
+            onCharacterTurn -= OnTurn;
+        }
+    }
+
     // #region "Utilities"
     // private void GenerateModifier(Stat.Type statType, StatModifier.Type modType, float amount, float duration = -1)
     // {
@@ -69,6 +95,19 @@ public class CharacterController : MonoBehaviour
         UIManager.instance.CreateCharSpriteInVelocity(id, character.sprite, stats.GetStat(Stat.Type.speed).GetValue);
         UIManager.instance.UpdateCharStatusInUI(id, character.sprite);
     }
+    private void OnTurn(bool start, int id)
+    {
+        wait = true;
+        if (start)
+        {
+            if (id == this.id) OnMyTurn();
+        }
+        else
+        {
+            wait = false;
+        }
+    }
+    public void EndTurn() => onCharacterTurn?.Invoke(false, id);
 
     public void OnMyTurn()
     {
@@ -80,8 +119,6 @@ public class CharacterController : MonoBehaviour
         skills[actualSkill].Cast();
         ActualSkill++;
     }
-
-    public void EndTurn() => GameManager.instance.activeTurn = false;
 
     public void TakeDamage(float amount)
     {
