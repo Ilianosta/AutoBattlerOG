@@ -144,7 +144,7 @@ public class CharacterController : MonoBehaviour
                 animator.SetTrigger("Death");
                 Suscribe(false);
                 wait = true;
-                UIManager.instance.EnableCharVelocityIcon(false, id);
+                GameManager.instance.onCharacterDead.Invoke(this);
                 return;
             }
             animator.SetTrigger("TakingPunch");

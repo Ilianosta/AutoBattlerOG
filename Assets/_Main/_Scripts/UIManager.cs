@@ -74,6 +74,15 @@ public class UIManager : MonoBehaviour
         icon.rect.gameObject.SetActive(enable);
     }
 
+    public void ResetCharVelocities()
+    {
+        foreach (VelocityChar icon in velocityChars)
+        {
+            icon.actualPosition = 0;
+            icon.rect.localPosition = Vector3.LerpUnclamped(velocityPointA.localPosition, velocityPointB.localPosition, 0);
+        }
+    }
+
     [System.Serializable]
     private class VelocityChar
     {

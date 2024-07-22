@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public float speedMultiplierRule;
     public Transform[] charPositions;
     public List<CharacterController> charactersInGame = new List<CharacterController>();
+    [SerializeField] private GameObject turnObject;
+    // Props
     public List<CharacterController> Allies
     {
         get
@@ -36,31 +38,53 @@ public class GameManager : MonoBehaviour
                        .ToList();
         }
     }
-    public delegate void OnCharacterCreated();
-    public event OnCharacterCreated onCharacterCreated;
-    [SerializeField] private GameObject turnObject;
+
+    // Events
+    public delegate void OnCharacterDead(CharacterController character);
+    public OnCharacterDead onCharacterDead;
     private void Awake()
     {
         if (GameManager.instance) Destroy(this);
         else GameManager.instance = this;
 
         CharacterController.onCharacterTurn += OnCharacterTurn;
+        onCharacterDead += CharacterDead;
     }
 
     private void Start()
     {
-        foreach (CharacterSelection selection in CharacterSelections.instance.selections)
-        {
-            GameObject newCharacter = Instantiate(selection.character.model, charPositions[selection.position]);
-            var newCharController = newCharacter.GetComponent<CharacterController>();
-            newCharController.id = selection.position;
-            charactersInGame.Add(newCharController);
-        }
+        LevelManager.instance.AleatorizeNewLevel();
+        LevelManager.instance.InstantiateNewLevel();
+
+        InstantiateCharacters(CharacterSelections.instance.selections, true);
+        InstantiateCharacters(LevelManager.instance.actualLevelTemplateStage.characterSelections, false);
     }
 
-    public void _OnCharacterCreated()
+    private void CharacterDead(CharacterController character)
     {
+        UIManager.instance.EnableCharVelocityIcon(false, character.id);
 
+        bool allEnemiesDead = true;
+
+        for (int i = 5; i < charactersInGame.Count; i++)
+        {
+            if (!charactersInGame[i].IsDead) allEnemiesDead = false;
+        }
+
+        if (allEnemiesDead) EndStage();
+    }
+
+    private void InstantiateCharacters(List<CharacterSelection> selections, bool isAlly)
+    {
+        foreach (CharacterSelection selection in selections)
+        {
+            int selectionPos = isAlly ? selection.position : selection.position + 5;
+            Transform charPos = charPositions[selectionPos];
+            GameObject newCharacter = Instantiate(selection.character.model, charPos.position, charPos.rotation, charPos);
+            var newCharController = newCharacter.GetComponent<CharacterController>();
+            newCharController.id = selectionPos;
+            charactersInGame.Add(newCharController);
+        }
     }
 
     private void OnCharacterTurn(bool start, int id)
@@ -69,5 +93,33 @@ public class GameManager : MonoBehaviour
         Vector3 objPosition = charactersInGame.FirstOrDefault((character) => character.id == id).transform.position;
         objPosition.y += 3;
         turnObject.transform.position = objPosition;
+    }
+
+    public void EndStage()
+    {
+        GameManager.GamePaused = true;
+        for (int i = 5; i < charactersInGame.Count; i++)
+        {
+            charactersInGame[i].gameObject.SetActive(false);
+            charactersInGame.Remove(charactersInGame[i]);
+        }
+        UIManager.instance.ResetCharVelocities();
+
+        // TODO MOVE CHARACTERS ALONG THE MAP
+
+        if (LevelManager.instance.GoToNextStage())
+        {
+            InstantiateCharacters(LevelManager.instance.actualLevelTemplateStage.characterSelections, false);
+            GameManager.GamePaused = false;
+        }
+        else
+        {
+            EndGame(true);
+        }
+    }
+
+    public void EndGame(bool win)
+    {
+        // TODO WIN/LOSE SCREEN
     }
 }
