@@ -8,6 +8,9 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public static UIManager instance;
+    [SerializeField] private GameObject winScreeObj;
+    [SerializeField] private GameObject gameUIObj;
+    // -----------------------------------------------------------
     [SerializeField] private UI_CharacterSprite[] charSprites;
     [SerializeField] private GameObject charSpritePrefab;
     [SerializeField] private Transform velocityLine;
@@ -21,6 +24,19 @@ public class UIManager : MonoBehaviour
     {
         if (UIManager.instance) Destroy(this);
         else UIManager.instance = this;
+
+        ShowGameUI(true);
+        ShowWinScreen(false);
+    }
+
+    public void ShowWinScreen(bool show)
+    {
+        winScreeObj.SetActive(show);
+    }
+
+    public void ShowGameUI(bool show)
+    {
+        gameUIObj.SetActive(show);
     }
 
     public void CreateCharSpriteInVelocity(int id, Sprite sprite, float speed)

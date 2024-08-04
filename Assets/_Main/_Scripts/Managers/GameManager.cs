@@ -78,6 +78,8 @@ public class GameManager : MonoBehaviour
     {
         foreach (CharacterSelection selection in selections)
         {
+            if (selection.character == null) continue;
+            
             int selectionPos = isAlly ? selection.position : selection.position + 5;
             Transform charPos = charPositions[selectionPos];
             GameObject newCharacter = Instantiate(selection.character.model, charPos.position, charPos.rotation, charPos);
@@ -120,6 +122,7 @@ public class GameManager : MonoBehaviour
 
     public void EndGame(bool win)
     {
-        // TODO WIN/LOSE SCREEN
+        UIManager.instance.ShowGameUI(false);
+        UIManager.instance.ShowWinScreen(true);
     }
 }
